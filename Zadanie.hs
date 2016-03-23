@@ -21,19 +21,31 @@ reachable graph vert =
              then new_visited
              else foldl (\a e -> reachable graph e a) new_visited new_verts
 
--- main = do
---   done <- isEOF
---   unless done $ do
---     inp <- getLine
---     putStrLn inp
---     main
+fromFile fname = do
+  contents <- readFile fname
+  return ()
 
-g1 = (1, [2 :: Int])
-g2 = (2, [3, 4])
-g3 = (3, [2])
-g4 = (4, [])
+readInt = read :: String -> Int
 
-graph = MyArray.array (1 :: Int, 4) [g1, g2, g3, g4]
-
-
-
+main = do
+  args <- getArgs
+  contents <- if null args then getContents else readFile (args !! 0)
+  if null contents
+     then do putStrLn "Empty data!"
+             return ()
+    else do let lists = lines contents
+            let processed = map words lists
+            let transformed = map (map readInt) processed
+            let final = foldl (\a e -> if null e then a else (head e, tail e):a) [] transformed
+            let maxVert =
+                  foldl (\a e -> foldl (\a2 e2 -> max a2 e2) a e) 1 transformed
+            let minVert =
+                  foldl (\a e -> foldl (\a2 e2 -> min a2 e2) a e) (head $ head transformed) transformed
+            -- let rng =
+            --       foldl
+            --       (\a e -> foldl (\a2 e2 -> (min (fst a2) e2, max (snd a2) e2)) a e)
+            --       (v, v)
+            --       transformed
+            --       where v = head $ head transformed
+            let graph = MyArray.array (minVert, maxVert) final
+            print $ reachable graph 1
