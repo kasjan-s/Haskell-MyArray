@@ -7,6 +7,7 @@ module MyArray
         listArray,
         elems,
         array,
+	update,
         (!),
         (//)
        ) where
