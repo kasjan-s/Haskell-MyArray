@@ -1,5 +1,6 @@
 module MyArray
        (Array,
+        Ix,
         range,
         index,
         inRange,
@@ -147,10 +148,6 @@ getelem _ Leaf = error "No element at that index"
 getelem i (Node _ j e l r) | i == j = e
                            | i < j = getelem i l
                            | i > j = getelem i r
-
-foldTree :: (a -> a -> e -> a) -> a -> Tree i e -> a
-foldTree f a Leaf = a
-foldTree f a (Node _ _ e l r) = f (foldTree f a l) (foldTree f a r) e
 
 treeElems :: Tree i e -> [e]
 treeElems tree = treeElems tree []
